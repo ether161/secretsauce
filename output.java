@@ -10,63 +10,59 @@ public class CSVReader {
 
 	private static final char DEFAULT_SEPARATOR = ',';
 	private static final char DEFAULT_QUOTE = '"';
-	private static final String inputFile  = "C:\\Users\\marazzj\\Desktop\\sample_names.csv";
-	private static final String outputFile = "C:\\Users\\marazzj\\Desktop\\test.csv";
+	private static final String inputFile = "C:\\Users\\marazzj\\Desktop\\sample_names.csv";
+	private static final String outputFile = "C:\\Users\\marazzj\\Desktop\\cleaned_Names.csv";
 
 	public static void main(String[] args) throws Exception {
 		String finalOutput = "";
+		String singleNameLine = "";
 		Scanner scanner = new Scanner(new File(inputFile));
 		while (scanner.hasNext()) {
 			List<String> line = parseLine(scanner.nextLine());
-			String localCase = line.get(0);
+			singleNameLine = line.get(0);
 
-			if (localCase.contains(",")) {
-				int a = localCase.indexOf(",");
-				// System.out.println(a);
-				String first = localCase.substring(a);
-				String last = localCase.substring(0, a);
-				localCase = first + " " + last;
-				localCase = localCase.substring(2);
+			if (singleNameLine.contains(",")) {
+				int commaIndex = singleNameLine.indexOf(",");
+				String first = singleNameLine.substring(commaIndex + 2);
+				String last = singleNameLine.substring(0, commaIndex);
+				singleNameLine = first + " " + last;
 			}
-
+			
 			else {
-				localCase = line.get(0);
+				singleNameLine = line.get(0);
 			}
-			;
-			finalOutput = finalOutput + localCase + "" + "\n";
+
+			finalOutput = finalOutput + singleNameLine + "" + "\n";
 			writeToFile(finalOutput);
 		}
 		scanner.close();
 
-        String csvFile = outputFile;
+		Scanner scanner1 = new Scanner(new File(outputFile));
+		String formatedFinalOutput = "";
+		while (scanner1.hasNext()) {
 
-        Scanner scanner1 = new Scanner(new File(csvFile));
-        while (scanner1.hasNext()) {
-            List<String> line = parseLine(scanner1.nextLine());
-            
-            String name = line.get(0);           
-            int start = name.indexOf(' ');
-            int end = name.lastIndexOf(' ');
+			List<String> line = parseLine(scanner1.nextLine());
 
-            String firstName = "";
-            String middleName = "";
-            String lastName = "";
+			String name = line.get(0);
+			int start = name.indexOf(' ');
+			int end = name.lastIndexOf(' ');
 
-            if (start >= 0) {
-                firstName = name.substring(0, start);
-                if (end > start)
-                    middleName = name.substring(start + 1, end);
-                lastName = name.substring(end + 1, name.length());
-            }    
-            System.out.println("Full Name: "+ line.get(0));
-            System.out.println("First: " + firstName);
-            System.out.println("Middle: " + middleName);
-            System.out.println("Last: " + lastName);
-            
-            //System.out.println(line.get(0));
-    
-        }
-        scanner.close();
+			String firstName = "";
+			String middleName = "";
+			String lastName = "";
+
+			if (start >= 0) {
+				firstName = name.substring(0, start);
+				if (end > start)
+					middleName = name.substring(start + 1, end);
+				lastName = name.substring(end + 1, name.length());
+			}
+			formatedFinalOutput = formatedFinalOutput
+					+ (firstName + "," + middleName + "," + lastName + "\n");
+
+		}
+		writeToFile(formatedFinalOutput);
+		scanner.close();
 
 	}
 
